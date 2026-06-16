@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -97,9 +98,16 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
     super.dispose();
   }
 
-  Widget _buildFooterLink(String text) {
+  Future<void> _launchUrl(String urlString) async {
+    final uri = Uri.parse(urlString);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri);
+    }
+  }
+
+  Widget _buildFooterLink(String text, {VoidCallback? onTap}) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Text(
         text,
         style: GoogleFonts.inter(
@@ -566,11 +574,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                           ),
                                         ),
                                         const SizedBox(height: 8),
-                                        _buildFooterLink('via Email'),
+                                        _buildFooterLink('via Email', onTap: () => _launchUrl('mailto:support@tapinvest.in')),
                                         const SizedBox(height: 8),
-                                        _buildFooterLink('via Whatsapp'),
+                                        _buildFooterLink('via Whatsapp', onTap: () => _launchUrl('https://api.whatsapp.com/send/?phone=916362667523&text&type=phone_number&app_absent=0')),
                                         const SizedBox(height: 8),
-                                        _buildFooterLink('via LinkedIn'),
+                                        _buildFooterLink('via LinkedIn', onTap: () => _launchUrl('https://www.linkedin.com/company/taphq/')),
+                                        const SizedBox(height: 8),
+                                        _buildFooterLink('Visit Tap', onTap: () => _launchUrl('https://tapinvest.in/')),
                                       ],
                                     ),
                                   ),

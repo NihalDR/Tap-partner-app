@@ -10,10 +10,13 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  bool _isEmailLogin = false;
 
   @override
   void dispose() {
     _phoneController.dispose();
+    _emailController.dispose();
     super.dispose();
   }
 
@@ -81,9 +84,9 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 40),
 
-              // Phone Number Field Label
+              // Phone/Email Field Label
               Text(
-                'Phone Number',
+                _isEmailLogin ? 'Email Address' : 'Phone Number',
                 style: GoogleFonts.inter(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,
@@ -92,61 +95,80 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 10),
 
-              // Phone Number Input Container
+              // Phone/Email Input Container
               Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12.0),
                   border: Border.all(color: outlineColor.withOpacity(0.8)),
                 ),
-                child: Row(
-                  children: [
-                    // Country Code Prefix Box
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF1F3F4), // Light grey prefix background
-                        borderRadius: const BorderRadius.only(
-                          topLeft: Radius.circular(11.0),
-                          bottomLeft: Radius.circular(11.0),
-                        ),
-                        border: Border(
-                          right: BorderSide(color: outlineColor.withOpacity(0.5)),
-                        ),
-                      ),
-                      child: Text(
-                        '+91',
-                        style: GoogleFonts.inter(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: textColor,
-                        ),
-                      ),
-                    ),
-                    
-                    // TextFormField Input
-                    Expanded(
-                      child: TextFormField(
-                        controller: _phoneController,
-                        keyboardType: TextInputType.phone,
+                child: _isEmailLogin
+                    ? TextFormField(
+                        controller: _emailController,
+                        keyboardType: TextInputType.emailAddress,
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
                           color: textColor,
                         ),
                         decoration: InputDecoration(
-                          hintText: '9501xxxxxx',
+                          hintText: 'Enter your email address',
                           hintStyle: GoogleFonts.inter(
                             color: Colors.grey.shade400,
                             fontWeight: FontWeight.w400,
                           ),
                           border: InputBorder.none,
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
                         ),
+                      )
+                    : Row(
+                        children: [
+                          // Country Code Prefix Box
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF1F3F4), // Light grey prefix background
+                              borderRadius: const BorderRadius.only(
+                                topLeft: Radius.circular(11.0),
+                                bottomLeft: Radius.circular(11.0),
+                              ),
+                              border: Border(
+                                right: BorderSide(color: outlineColor.withOpacity(0.5)),
+                              ),
+                            ),
+                            child: Text(
+                              '+91',
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: textColor,
+                              ),
+                            ),
+                          ),
+                          
+                          // TextFormField Input
+                          Expanded(
+                            child: TextFormField(
+                              controller: _phoneController,
+                              keyboardType: TextInputType.phone,
+                              style: GoogleFonts.inter(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: textColor,
+                              ),
+                              decoration: InputDecoration(
+                                hintText: '9501xxxxxx',
+                                hintStyle: GoogleFonts.inter(
+                                  color: Colors.grey.shade400,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                                border: InputBorder.none,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
-                ),
               ),
               const SizedBox(height: 24),
 
@@ -158,7 +180,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Simulating sending OTP
                     ScaffoldMessenger.of(context).showSnackBar(
                       SnackBar(
-                        content: Text('OTP sent to +91 ${_phoneController.text}'),
+                        content: Text('OTP sent to ${_isEmailLogin ? _emailController.text : '+91 ${_phoneController.text}'}'),
                         duration: const Duration(seconds: 2),
                       ),
                     );
@@ -212,17 +234,14 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 32),
 
-              // "Login via Email" Button
+              // Toggle Login Method Button
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Redirecting to Email Login...'),
-                        duration: Duration(seconds: 2),
-                      ),
-                    );
+                    setState(() {
+                      _isEmailLogin = !_isEmailLogin;
+                    });
                   },
                   style: OutlinedButton.styleFrom(
                     foregroundColor: textColor,
@@ -236,14 +255,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Icon(
-                        Icons.mail_outline,
+                      Icon(
+                        _isEmailLogin ? Icons.phone_outlined : Icons.mail_outline,
                         color: textColor,
                         size: 20,
                       ),
                       const SizedBox(width: 8),
                       Text(
-                        'Login via Email',
+                        _isEmailLogin ? 'Login via Phone' : 'Login via Email',
                         style: GoogleFonts.inter(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,

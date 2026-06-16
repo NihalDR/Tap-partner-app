@@ -5,6 +5,7 @@ import 'screens/why_tap_screen.dart';
 import 'screens/stats_screen.dart';
 import 'screens/benefits_screen.dart';
 import 'screens/login_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() {
   runApp(const TapInvestApp());
@@ -48,7 +49,7 @@ class TapInvestApp extends StatelessWidget {
           elevation: 12,
         ),
       ),
-      home: const MainNavigationShell(),
+      home: const SplashScreen(),
     );
   }
 }

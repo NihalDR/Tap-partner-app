@@ -5,9 +5,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'login_screen.dart';
 
 class HomeScreen extends StatefulWidget {
-  final VoidCallback onGetStarted;
-
-  const HomeScreen({super.key, required this.onGetStarted});
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -100,8 +98,10 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
 
   Future<void> _launchUrl(String urlString) async {
     final uri = Uri.parse(urlString);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri);
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (_) {
+      // Silently ignore if it cannot launch
     }
   }
 
@@ -138,18 +138,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
               ),
             ),
           ),
-          Positioned(
-            top: 0,
-            left: size.width * 0.15,
-            width: 100,
-            height: 180,
-            child: Opacity(
-              opacity: 0.25,
-              child: CustomPaint(
-                painter: HangingLampPainter(),
-              ),
-            ),
-          ),
+
           Positioned(
             left: -30,
             bottom: size.height * 0.08,
@@ -243,7 +232,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                                   return Transform.scale(
                                     scale: scale,
                                     child: InkWell(
-                                      onTap: widget.onGetStarted,
+                                      onTap: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                        );
+                                      },
                                       borderRadius: BorderRadius.circular(9999),
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
@@ -486,7 +480,12 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               SizedBox(
                                 width: double.infinity,
                                 child: ElevatedButton(
-                                  onPressed: widget.onGetStarted,
+                                  onPressed: () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => const LoginScreen()),
+                                    );
+                                  },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Colors.white,
                                     foregroundColor: const Color(0xFF40674A),
